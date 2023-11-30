@@ -1,48 +1,51 @@
-import axios from 'axios';
-import express from 'express';
-import bodyParser from 'body-parser';
-import cors from 'cors'; 
+import Fastify from 'fastify'
+import cors from '@fastify/cors'
 
-const app = express();
-const port = 3005;
+const fastify = Fastify({
+    logger: true
+  })
 
-app.use(bodyParser.text({ type: ['text/*', '*/json'], limit: '50mb' }))
-
-app.use(cors());
-
-app.get('/', (req, res) => {
-    res.send('Hello World!');
+fastify.register(cors, {
+  origin: '*',
+  methods: ['GET', 'POST'],
 });
 
-app.post('/tunnel', async (req, res) => {
-    try {
-        const envelope = req.body;
-
-        const pieces = envelope.split('\n');
-
-        const header = JSON.parse(pieces[0]);
-
-        const { host, pathname, username } = new URL(header.dsn);
-
-        const projectId = pathname.slice(1);
-
-        const url = `https://${host}/api/${projectId}/envelope/?sentry_key=${username}`;
-
-        const options = {
-            'headers': {
-                'Content-Type': 'application/x-sentry-envelope'
-            }
-        };
-
-        const response = await axios.post(url, envelope, options);
-
-        res.status(201).json({ message: "Success", data: response?.data })
-    } catch (e) {
-        const error = e?.response || e?.message;
-        res.status(400).json({ message: 'invalid request', error: error });
-    }
+fastify.get('/', async (request, reply) => {
+  return 'Tunnel For Sentry Nolemon /tunnel';
 });
 
-app.listen(port, () => {
-    console.log(`Example app listening on port ${port}`);
+fastify.post('/tunnel', async (request, reply) => {
+  try {
+    const envelope = request.body;
+
+    const pieces = envelope.split('\n');
+
+    const header = JSON.parse(pieces[0]);
+
+    const { host, pathname, username } = new URL(header.dsn);
+
+    const projectId = pathname.slice(1);
+
+    const url = `https://${host}/api/${projectId}/envelope/?sentry_key=${username}`;
+
+    const options = {
+      headers: {
+        'Content-Type': 'fistifylication/x-sentry-envelope',
+      },
+    };
+
+    const response = await fistify.axios.post(url, envelope, options);
+
+    reply.status(201).send({ message: 'Success', data: response?.data });
+  } catch (e) {
+    const error = e?.response || e?.message;
+    reply.status(400).send({ message: 'Invalid request', error });
+  }
 });
+
+try {
+    await fastify.listen({ port: 3000 })
+  } catch (err) {
+    fastify.log.error(err)
+    process.exit(1)
+  }
