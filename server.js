@@ -11,9 +11,13 @@ fastify.register(cors, {
   methods: ['GET', 'POST'],
 });
 
-fastify.get('/', async (request, reply) => {
-  return 'Tunnel For Sentry Nolemon /tunnel';
-});
+// fastify.get('/', async (request, reply) => {
+//   return 'Tunnel For Sentry Nolemon /tunnel';
+// });
+
+fastify.get('/', function (request, reply) {
+    reply.send({ status: 'Tunnel For Sentry Nolemon /tunnel' })
+  })
 
 fastify.post('/tunnel', async (request, reply) => {
   try {
@@ -45,7 +49,7 @@ fastify.post('/tunnel', async (request, reply) => {
 });
 
 try {
-    await fastify.listen({ port: PORT })
+    await fastify.listen({ port: 9002 })
   } catch (err) {
     fastify.log.error(err)
     process.exit(1)
