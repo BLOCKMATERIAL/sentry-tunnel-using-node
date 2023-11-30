@@ -4,7 +4,6 @@ const PORT = process.env.PORT || 3030;
 
 const fastify = Fastify({
     logger: false,
-    https: 
   })
 
 fastify.register(cors, {
