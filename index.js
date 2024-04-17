@@ -8,11 +8,7 @@ const bodyParser = require('body-parser');
 const app = express();
 
 // Apply CORS middleware globally
-app.use(cors({
-  origin: '*', // Set the allowed origin or use '*' for all origins
-  methods: ['GET', 'POST', 'PUT', 'DELETE'], // Specify allowed methods
-  allowedHeaders: ['Content-Type', 'Authorization'] // Specify allowed headers
-}));
+app.use(cors());
 
 // Apply bodyParser middleware
 app.use(bodyParser.text({ type: ['text/*', '*/json'], limit: '100mb' }));
